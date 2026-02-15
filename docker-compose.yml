@@ -1,0 +1,41 @@
+# ── Docker Compose – Driving Licence Validator ──
+# The "ai-validator" service is ready now.
+# The "client-app" service is a placeholder for the future container
+# that will send images and receive validation results.
+
+services:
+  # ── Gemini AI Validator ──
+  ai-validator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: licence-validator-ai
+    ports:
+      - "8080:8000"
+    env_file:
+      - .env
+    networks:
+      - validator-net
+    restart: unless-stopped
+
+  # ── Future Client Service (placeholder) ──
+  # Uncomment and configure when the second container is ready.
+  #
+  # client-app:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   container_name: licence-client
+  #   depends_on:
+  #     ai-validator:
+  #       condition: service_healthy
+  #   environment:
+  #     # The AI service is reachable by its service name on the shared network
+  #     AI_VALIDATOR_URL: http://ai-validator:8000
+  #   networks:
+  #     - validator-net
+  #   restart: unless-stopped
+
+networks:
+  validator-net:
+    driver: bridge
