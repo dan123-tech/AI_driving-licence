@@ -180,6 +180,21 @@ async def analyse_licence(image_bytes: bytes, content_type: str) -> dict:
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
+@fastapi_app.get("/")
+async def root():
+    """So the bare deployment URL (e.g. on Vercel) is not a 404."""
+    return {
+        "service": "driving-licence-validator",
+        "health": "/health",
+        "docs": "/docs",
+        "openapi": "/openapi.json",
+        "endpoints": {
+            "validate": "POST /validate (multipart image)",
+            "validate_base64": "POST /validate-base64 (JSON)",
+        },
+    }
+
+
 @fastapi_app.get("/health", response_model=HealthResponse)
 async def health():
     """Health-check endpoint – useful for Docker / orchestrators."""
